@@ -12,14 +12,11 @@
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true);
 ?>
-
 <div class="card">
 	<?if($arParams["DISPLAY_NAME"]!="N" && $arResult["NAME"]):?>
 		<h1 class="title"><?=$arResult["NAME"]?></h1>
 	<?endif;?>
-	<?if($arParams["DISPLAY_DATE"]!="N" && $arResult["DISPLAY_ACTIVE_FROM"]):?>
 		<p class="date"><?=$arResult["DISPLAY_ACTIVE_FROM"]?></p>
-	<?endif;?>
     <div class="content">
 		<?if($arParams["DISPLAY_PICTURE"]!="N" && is_array($arResult["DETAIL_PICTURE"])):?>
 			<div class="image">
@@ -29,14 +26,8 @@ $this->setFrameMode(true);
 		<?if($arResult["DETAIL_TEXT"] <> ''):?>
         <div class="text">
 			<?echo $arResult["DETAIL_TEXT"];?>
-            <!--<p>За первое полугодие 2019 года «ЭР-Телеком Холдинг» показал
-                двузначное увеличение выручки – на 11%, по сравнению с аналогичным периодом прошлого года, что составило
-                21 438 млн.руб. Прирост произошел в двух бизнес–сегментах – в B2B увеличение на 15%, а в B2C – на
-                9%.</p>
-                <p>Достигнутые результаты наглядно показывают, что развитие компании соответствует заявленной ранее
-                    стратегии.Более подробную информацию можно найти в разделе «Инвесторам».</p>-->
             </div>
 		<?endif?>
     </div>
-    <!--<a class="back_button" href="#">Назад к новостям</a>-->
+    <a class="back_button" href="<?=$arResult["IBLOCK"]["LIST_PAGE_URL"]?>">Назад к новостям</a>
 </div>

@@ -1,79 +1,78 @@
-div.card * {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-  color: #172c5f;
+.card{padding-left:4.16667vw;padding-right:4.16667vw;padding-bottom:80px}
+.title{width:54.16671vw;font-size:2.5rem;color:#172c5f;line-height:1.5;margin-bottom:20px}
+.date{font-size:1.4rem;color:rgba(23,44,95,.5);line-height:1.7;margin-bottom:20px}
+.content{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.image{top:200px;width:29.16669vw}
+.image img{width:100%;height:100%;-o-object-fit:cover;object-fit:cover}
+.text{width:58.33338vw}
+.text-name{font-size:2.5rem;color:#172c5f;line-height:1.5;margin-bottom:40px}
+.text-position{font-size:2rem;color:#172c5f;line-height:1.5;margin-bottom:40px}
+.text-h2{font-size:2rem;font-weight:400;color:#172c5f;line-height:1.5;margin-bottom:20px}
+.text-p{font-size:1.4rem;color:#172c5f;line-height:1.7;margin:40px 0}
+.text-p:first-child{margin-top:0}
+.back_button{position:relative;display:inline-block;font-size:1.2rem;font-family:Gotham Pro;color:#172c5f;text-transform:uppercase;margin-top:20px}
+.back_button:hover{color:#172c5f}
+.back_button:before{content:"";position:absolute;left:0;right:0;bottom:-4px;width:100%;height:1px;background-color:#172c5f;transition:transform .3s}
+
+@media (min-width:768px){
+  .image{position:-webkit-sticky;position:sticky}
+  .back_button:hover:before{transform:scaleX(0)}
+}
+@media (min-width:1200px){
+  .card{padding-bottom:140px}
+  .title{font-size:5rem}
+  .os-ios .title{font-size:2.5rem}
+  .title{margin-bottom:40px}
+  .date{font-size:2rem}
+  .os-ios .date{font-size:1.4rem}
+  .date{margin-bottom:40px}
+  .text-name{font-size:5rem}
+  .os-ios .text-name{font-size:2.5rem}
+  .text-name{margin-bottom:80px}
+  .text-position{font-size:3rem}
+  .os-ios .text-position{font-size:2rem}
+  .text-position{margin-bottom:80px}
+  .text-h2{font-size:3rem}
+  .os-ios .text-h2{font-size:2rem}
+  .text-h2{margin-bottom:40px}
+  .text-p{font-size:2rem}
+  .os-ios .text-p{font-size:1.4rem}
+  .back_button,.os-ios .back_button{font-size:1.2rem}
+  .back_button{margin-top:40px}
 }
 
-div.card .title {
-  text-align: center;
-  width: 100%;
-  margin: 0 20px;
-  font-size: 2.5rem;
-  line-height: 1.5;
+@media (max-width:767.98px){
+  .text-p{margin:30px 0}
 }
 
-div.card .date {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: rgba(23, 44, 95, 0.5);
-  line-height: 1.7;
-  margin-left: 20px;
+@media (max-width:1199.98px){
+  .card{padding-left:60px;padding-right:60px}
+  .title{width:100%}
+  .image,.text{width:calc(50% - 30px)}
 }
 
-div.card .content {
-  margin-top: 20px;
-  width: 100%;
-  display: block;
+@media print{
+  .date,.title{margin-bottom:50px}
+  .card{margin-bottom:50px}
+  .card,.news-card{padding-left:0;padding-right:0}
 }
 
-div.card .image {
-  width: 45%;
-  float: left;
-  margin: 0 25px 15px 0;
+@media print and (max-width:1199.98px){
+  .card{padding-left:0;padding-right:0}
 }
 
-div.card .image img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  padding: 10px;
+@media (max-width:1199.98px) and (max-width:767.98px){
+  .card{padding-left:30px;padding-right:30px}
+  .image{width:100%;margin-bottom:40px}
+  .text{width:100%}
 }
 
-div.card .content .text {
-  display: block;
-  padding: 10px;
+@media print and (max-width:1199.98px) and (max-width:767.98px){
+  .card{padding-left:0;padding-right:0}
 }
 
-div.card .content .text p {
-  margin-bottom: 1rem;
-  font-weight: 300;
-  line-height: 1.7;
-}
-
-.back_button:hover {
+a, a:active, a:hover, a:visited {
   text-decoration: none;
   outline: none;
-}
-
-.back_button {
-  position: relative;
-  display: inline-block;
-  font-size: 18px;
-  color: #172c5f;
-  text-transform: uppercase;
-  margin-top: 20px;
-  clear: both;
-}
-
-@media (max-width: 700px) {
-  div.card .image {
-    width: 100%;
-    float: none;
-    margin: 0 0 15px 0;
-  }
-
-  div.card .content .text {
-    width: 100%;
-  }
+  width: fit-content;
 }
