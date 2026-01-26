@@ -12,22 +12,24 @@
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true);
 ?>
-<div class="card">
+<div class="article-card">
 	<?if($arParams["DISPLAY_NAME"]!="N" && $arResult["NAME"]):?>
-		<h1 class="title"><?=$arResult["NAME"]?></h1>
+		<div class="article-card__title"><?=$arResult["NAME"]?></h1>
 	<?endif;?>
-		<p class="date"><?=$arResult["DISPLAY_ACTIVE_FROM"]?></p>
-    <div class="content">
+		<div class="article-card__date"><?=$arResult["DISPLAY_ACTIVE_FROM"]?></p>
+    <div class="article-card__content">
 		<?if($arParams["DISPLAY_PICTURE"]!="N" && is_array($arResult["DETAIL_PICTURE"])):?>
-			<div class="image">
+			<div class="article-card__image sticky">
             	<img src="<?=$arResult["DETAIL_PICTURE"]["SRC"]?>" alt="<?=$arResult["DETAIL_PICTURE"]["ALT"]?>" data-object-fit="cover"/>
         	</div>
 		<?endif?>
-		<?if($arResult["DETAIL_TEXT"] <> ''):?>
-        <div class="text">
-			<?echo $arResult["DETAIL_TEXT"];?>
-            </div>
-		<?endif?>
+        <div class="article-card__text">
+			<?if($arResult["DETAIL_TEXT"] <> ''):?>
+			<div class="block-content" data-anim="anim-3">
+				<?echo $arResult["DETAIL_TEXT"];?>
+			</div>
+			<?endif?>
+			<a class="article-card__button" href="<?=$arResult["IBLOCK"]["LIST_PAGE_URL"]?>">Назад к новостям</a>
+        </div>
     </div>
-    <a class="back_button" href="<?=$arResult["IBLOCK"]["LIST_PAGE_URL"]?>">Назад к новостям</a>
 </div>
