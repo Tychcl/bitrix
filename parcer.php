@@ -103,7 +103,7 @@ if (($handle = fopen($csvFile, "r")) !== false) {
             			    array_splice($ar, 0, 1);
             			    $value = implode(' ', $ar);
             			} else {
-            			    $PROP['SALARY_TYPE'] = $arProps['SALARY_TYPE']['='];
+            			    $PROP['SALARY_TYPE'] = $arEnums['SALARY_TYPE']['='];
             			}
 					}
 					break;
@@ -146,4 +146,5 @@ if (($handle = fopen($csvFile, "r")) !== false) {
 		$row++;
 	}
 	fclose($handle);
+
 }
