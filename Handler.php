@@ -5,8 +5,6 @@ class Iblock
 {
     public function addLog(&$arFields)
     {
-        $testFile = $_SERVER['DOCUMENT_ROOT'] . '/upload/init_test.txt';
-
         $LOG = 'LOG';
         $LOG_IBLOCK = \CIBlock::GetList(Array("SORT"=>"ASC"), Array('CODE' => $LOG))->GetNext();
         //$ar = print_r($arFields, true);
@@ -87,14 +85,5 @@ class Iblock
         $el = new \CIBlockElement;
         $PROP["MODIFIED_BY"] = $element['MODIFIED_BY'];
         $new_el_id = in_array($PROP['CODE'], array_keys($elements)) ? $el->Update($elements[$PROP['CODE']], $PROP) : $el->Add($PROP); 
-
-        file_put_contents($testFile, print_r([
-            'LOG_DATA' => $LOG_IBLOCK,
-            'LOG_SECTIONS' => $arSec,
-            'IBLOCK_DATA' => $iblock,
-            'ELEMENT_DATA' => $element,
-            'PROP' => $PROP,
-            'TEST' => $new_el_id ? $el->LAST_ERROR : $el->LAST_ERROR
-        ], true));
     }
 }
