@@ -11,10 +11,6 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true); 
-$base = $arResult["ITEMS"][0][0]["LIST_PAGE_URL"];
-#echo "<pre>";
-#print_r($arResult);
-#echo "</pre>";
 ?>
 
 <div class="any-list">

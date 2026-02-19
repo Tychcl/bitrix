@@ -28,13 +28,11 @@ class UniversalList extends \CBitrixComponent
             return;
         }
         elseif ($this->arParams['IBLOCK_ID'] > 0){
-            $this->arResult['CHOICE'] = 'ID';
             $I_ID = $this->arParams['IBLOCK_ID'];
             $iblock = \CIBlock::GetByID($I_ID)->GetNext();
             $this->arResult['IBLOCKS'][$I_ID] = $iblock;
             $this->getItemsByID($I_ID);
         }else{
-            $this->arResult['CHOICE'] = 'TYPE';
             $this->getItemsByType($this->arParams['IBLOCK_TYPE']);
         }
         
@@ -43,8 +41,12 @@ class UniversalList extends \CBitrixComponent
 
     protected function getItemsByID($I_ID)
     {
-        $arSelect = ['ID', 'NAME', 'PREVIEW_TEXT', 'PREVIEW_PICTURE', 'DETAIL_PAGE_URL'];
-        $elements = \CIBlockElement::GetList(['SORT' => 'ASC'], ['IBLOCK_ID' => $I_ID, 'ACTIVE' => 'Y'], false, false, $arSelect);
+        $filter = ['IBLOCK_ID' => $I_ID, 'ACTIVE' => 'Y'];
+        if($this->arParams['IBLOCK_ELEMENT_FIELD_FILTER'] != ''){
+            $filter[$this->arParams['IBLOCK_ELEMENT_FIELD_FILTER']] = $this->arParams['FIELD_FILTER'];
+        }
+        $arSelect = ['ID', 'NAME', 'PREVIEW_TEXT', 'DETAIL_PAGE_URL'];
+        $elements = \CIBlockElement::GetList(['SORT' => 'ASC'], $filter, false, false, $arSelect);
         while ($el = $elements->GetNext())
         {
             if ($el['PREVIEW_PICTURE'])
@@ -65,4 +67,6 @@ class UniversalList extends \CBitrixComponent
             $this->getItemsByID($I_ID);
         }
     }
+
+
 }
