@@ -29,7 +29,10 @@ class UniversalList extends \CBitrixComponent
         }
         elseif ($this->arParams['IBLOCK_ID'] > 0){
             $this->arResult['CHOICE'] = 'ID';
-            $this->getItemsByID($this->arParams['IBLOCK_ID']);
+            $I_ID = $this->arParams['IBLOCK_ID'];
+            $iblock = \CIBlock::GetByID($I_ID)->GetNext();
+            $this->arResult['IBLOCKS'][$I_ID] = $iblock;
+            $this->getItemsByID($I_ID);
         }else{
             $this->arResult['CHOICE'] = 'TYPE';
             $this->getItemsByType($this->arParams['IBLOCK_TYPE']);
@@ -48,7 +51,7 @@ class UniversalList extends \CBitrixComponent
             {
                 $el['PREVIEW_PICTURE'] = \CFile::GetFileArray($el['PREVIEW_PICTURE']);
             }
-            $this->arResult['ITEMS'][$I_ID][] = $el;
+            $this->arResult['ITEMS'][$I_ID][$el['ID']] = $el;
         }
     }
 
@@ -58,6 +61,7 @@ class UniversalList extends \CBitrixComponent
         while ($iblock = $iblocks->Fetch())
         {
             $I_ID = $iblock['ID'];
+            $this->arResult['IBLOCKS'][$I_ID] = $iblock;
             $this->getItemsByID($I_ID);
         }
     }
