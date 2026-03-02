@@ -12,6 +12,9 @@
    4. После перезагрузки сервера снова продолжите установку BitrixEnv: ./bitrix-env-9.sh
    5. Когда установка закончится , запустите меню BitrixEnv: /root/menu.sh
    6. В VMBitrix версии 9x+ нужно обязательно создать пул (1. Create Management pool of server). Мастер создания пула откроет все необходимые порты в CentOS для корректной работы сервисов продуктов «1С-Битрикс»
+   7. cd ../
+   8. cd home/bitrix/www
+   9. wget https://www.1c-bitrix.ru/download/scripts/bitrixsetup.php
    
 
 
