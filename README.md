@@ -26,6 +26,7 @@
 
 # 7 задание
 комплексное свойство, указываешь и чтобы проверить идешь в элемент инфоблока с комплексным свойством
+https://colain.ru/articles/infokoding/vizualnyy-redaktor-bitriksa-v-svoey-forme/?ysclid=mmbarkc91u115754236
 
 # ./bitrix/.settings.php
 через консоль `vi .settings.php`, редактировать `:i`, сохранить и выйти `:wq`
