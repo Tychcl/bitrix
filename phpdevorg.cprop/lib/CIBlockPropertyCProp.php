@@ -9,7 +9,25 @@ class CIBlockPropertyCProp
 
     public static function GetUserTypeDescription()
     {
+        return array(
+            'BASE_TYPE' => 'S',
+            'USER_TYPE' => 'C',
+            'DESCRIPTION' => Loc::getMessage('IEX_CPROP_DESC'),
+            'CLASS_NAME' => 'CIBlockPropertyCProp'
+            //'GetPropertyFieldHtml' => array(__CLASS__,  'GetPropertyFieldHtml'),
+            //'ConvertToDB' => array(__CLASS__, 'ConvertToDB'),
+            //'ConvertFromDB' => array(__CLASS__,  'ConvertFromDB'),
+            //'GetEditFormHTML' => array(__CLASS__, 'GetSettingsHTML'),
+            //'PrepareSettings' => array(__CLASS__, 'PrepareUserSettings'),
+            //'GetLength' => array(__CLASS__, 'GetLength'),
+            //'GetPublicViewHTML' => array(__CLASS__, 'GetPublicViewHTML')
+        );
+    }
 
+
+
+    public static function GetIBlockTypeDescription()
+    {
         return array(
             'PROPERTY_TYPE' => 'S',
             'USER_TYPE' => 'C',
@@ -26,13 +44,6 @@ class CIBlockPropertyCProp
 
     public static function GetPropertyFieldHtml($arProperty, $value, $strHTMLControlName)
     {
-        echo '<pre>';
-        echo 'Метод вызван!<br>';
-        echo 'arProperty: ' . print_r($arProperty, true) . '<br>';
-        echo 'value: ' . print_r($value, true) . '<br>';
-        echo 'strHTMLControlName: ' . print_r($strHTMLControlName, true);
-        echo '</pre>';
-        die();
         $hideText = Loc::getMessage('IEX_CPROP_HIDE_TEXT');
         $clearText = Loc::getMessage('IEX_CPROP_CLEAR_TEXT');
 
@@ -52,8 +63,7 @@ class CIBlockPropertyCProp
         if($arProperty['MULTIPLE'] === 'Y'){
             $result .= ' | <a class="cl mf-delete">'.$clearText.'</a></div>';
         }
-        $result .= '<table class="mf-fields-list active">';
-
+        $result .= '<table class="mf-fields-list active" style="width: fit-content;" align="right">';
 
         foreach ($arFields as $code => $arItem){
             if($arItem['TYPE'] === 'string'){
@@ -70,6 +80,9 @@ class CIBlockPropertyCProp
             }
             else if($arItem['TYPE'] === 'element'){
                 $result .= self::showBindElement($code, $arItem['TITLE'], $value, $strHTMLControlName);
+            }
+            else if($arItem['TYPE'] === 'html'){
+                $result .= self::showHTMLEditor($code, $arItem['TITLE'], $value, $strHTMLControlName);
             }
         }
 
@@ -103,12 +116,15 @@ class CIBlockPropertyCProp
                 else if($type === 'date'){
                     $result .=  $title . ': ' . $value . '<br>';
                 }
+                else if ($type === 'html') {
+                    $result .= $title . ': ' . $value . '<br>';
+                }
             }
         }
 
         return $result;
     }
-
+    
     public static function GetSettingsHTML($arProperty, $strHTMLControlName, &$arPropertyFields)
     {
         $btnAdd = Loc::getMessage('IEX_CPROP_SETTING_BTN_ADD');
@@ -212,11 +228,13 @@ class CIBlockPropertyCProp
 
     public static function ConvertToDB($arProperty, $arValue)
     {
+        file_put_contents($_SERVER['DOCUMENT_ROOT'].'/convert_debug.log', print_r(['p'=>$arProperty, 'v'=>$arValue], true));
         $arFields = self::prepareSetting($arProperty['USER_TYPE_SETTINGS']);
 
         foreach($arValue['VALUE'] as $code => $value){
-
-
+            if($arFields[$code]['TYPE'] === 'html'){
+                $arValue['VALUE'][$code] = $value;
+            }
             if($arFields[$code]['TYPE'] === 'file'){
                 $arValue['VALUE'][$code] = self::prepareFileToDB($value);
             }
@@ -272,91 +290,71 @@ class CIBlockPropertyCProp
 
     public static function showHTMLEditor($code, $title, $arValue, $strHTMLControlName)
     {
-        $value = !empty($arValue['VALUE'][$code]) ? htmlspecialchars($arValue['VALUE'][$code]) : ''; // текущее значение
-        $fieldName = $strHTMLControlName['VALUE']; // имя поля
+        if (!CModule::IncludeModule('fileman')) {
+            return '<tr><td colspan="2">' . Loc::getMessage('IEX_CPROP_ERROR_FILEMAN') . '</td></tr>';
+        }
 
-        // Уникальный ID для контейнера редактора
-        $editorId = 'html_editor_' . $code . '_' .$fieldName;
+        // Правильные имена полей, ожидаемые инфоблоком
+        $correctFieldName = $strHTMLControlName['VALUE'] . '[' . $code . ']';
+        $correctFieldNameType = $strHTMLControlName['VALUE'] . '[' . $code . '_TYPE]';
 
-        //Функция включает буферизацию вывода. Пока буферизация вывода активна, вывод из скрипта не отправляется, вместо этого вывод сохраняется во внутреннем буфере
+        // Временные уникальные имена (без квадратных скобок)
+        $tempFieldName = 'TEMP_VALUE_' . md5($correctFieldName);
+        $tempFieldNameType = 'TEMP_TYPE_' . md5($correctFieldNameType);
+
+        $value = !empty($arValue['VALUE'][$code]) ? $arValue['VALUE'][$code] : '';
+        $type = !empty($arValue['VALUE'][$code . '_TYPE']) ? $arValue['VALUE'][$code . '_TYPE'] : 'html';
+
         ob_start();
         ?>
         <tr>
-            <td align="right" valign="top"><?= htmlspecialcharsbx($arProperty['NAME']) ?>:</td>
+            <td align="right" style="width: fit-content;" valign="top"><?= htmlspecialcharsbx($title) ?>:</td>
             <td>
                 <?php
-                \CHTMLEditor::ShowEditor([
-                    'name' => $fieldName,
-                    'id' => $editorId,
-                    'value' => $value,
-                    'width' => '100%',
-                    'height' => 250,
-                    'minBodyWidth' => 350,
-                    'normalBodyWidth' => 750,
-                ]);
+                //CFileMan::ShowHTMLEditControl(
+                //    $tempFieldName,                               
+                //    $value,
+                //    [   'height' => 600, 'width' => '100%',
+                //        "arTaskbars"=>["BXComponentsTaskbar", "BXComponents2Taskbar", "BXPropertiesTaskbar", "BXSnippetsTaskbar"],
+                //        ]);
+
+                CFileMan::AddHTMLEditorFrame(
+                    $tempFieldName,
+                    $value,
+                    $tempFieldNameType,
+                    $type,
+                    [
+                        'height' => 600,
+                        'width' => '100%'
+                    ]);
+                
+                //$LHE = new CHTMLEditor; 
+                //$LHE->Show([
+                //    'name' => $correctFieldName,
+                //    'id' => $correctFieldNameType,
+                //    'content' => $value,
+                //    'width' => '100%',
+                //    'height' => 600
+                //]);
                 ?>
             </td>
         </tr>
-        <?php
-        //Получает содержимое активного буфера вывода и выключает его
-        return ob_get_clean();
-    }
-
-    private static function showFile_OLD($code, $title, $arValue, $strHTMLControlName)
-    {
-        $result = '';
-
-        if(!empty($arValue['VALUE'][$code]) && !is_array($arValue['VALUE'][$code])){
-            $fileId = $arValue['VALUE'][$code];
-        }
-        else if(!empty($arValue['VALUE'][$code]['OLD'])){
-            $fileId = $arValue['VALUE'][$code]['OLD'];
-        }
-        else{
-            $fileId = '';
-        }
-
-        if(!empty($fileId))
-        {
-            $arPicture = CFile::GetByID($fileId)->Fetch();
-            if($arPicture)
-            {
-                $strImageStorePath = COption::GetOptionString('main', 'upload_dir', 'upload');
-                $sImagePath = '/'.$strImageStorePath.'/'.$arPicture['SUBDIR'].'/'.$arPicture['FILE_NAME'];
-                $fileType = self::getExtension($sImagePath);
-
-                if(in_array($fileType, ['png', 'jpg', 'jpeg', 'gif'])){
-                    $content = '<img src="'.$sImagePath.'">';
-                }
-                else{
-                    $content = '<div class="mf-file-name">'.$arPicture['FILE_NAME'].'</div>';
-                }
-
-                $result = '<tr>
-                        <td align="right" valign="top">'.$title.': </td>
-                        <td>
-                            <table class="mf-img-table">
-                                <tr>
-                                    <td>'.$content.'<br>
-                                        <div>
-                                            <label><input name="'.$strHTMLControlName['VALUE'].'['.$code.'][DEL]" value="Y" type="checkbox"> '. Loc::getMessage("IEX_CPROP_FILE_DELETE") . '</label>
-                                            <input name="'.$strHTMLControlName['VALUE'].'['.$code.'][OLD]" value="'.$fileId.'" type="hidden">
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>                      
-                        </td>
-                    </tr>';
+        <script>
+        BX.ready(function() {
+            // Переименовываем скрытое поле для значения
+            var valueField = document.querySelector('textarea[name="' + '<?= CUtil::JSEscape($tempFieldName) ?>' + '"]');
+            if (valueField) {
+                valueField.setAttribute('name', '<?= CUtil::JSEscape($correctFieldName) ?>');
             }
-        }
-        else{
-            $result .= '<tr>
-                    <td align="right">'.$title.': </td>
-                    <td><input type="file" value="" name="'.$strHTMLControlName['VALUE'].'['.$code.']"/></td>
-                </tr>';
-        }
-
-        return $result;
+            // Переименовываем скрытое поле для типа
+            var typeField = document.querySelector('textarea[name="' + '<?= CUtil::JSEscape($tempFieldNameType) ?>' + '"]');
+            if (typeField) {
+                typeField.setAttribute('name', '<?= CUtil::JSEscape($correctFieldNameType) ?>');
+            }
+        });
+        </script>
+        <?php
+        return ob_get_clean();
     }
 
     private static function showFile($code, $title, $arValue, $strHTMLControlName)
@@ -778,7 +776,8 @@ class CIBlockPropertyCProp
             'file' => Loc::getMessage('IEX_CPROP_FIELD_TYPE_FILE'),
             'text' => Loc::getMessage('IEX_CPROP_FIELD_TYPE_TEXT'),
             'date' => Loc::getMessage('IEX_CPROP_FIELD_TYPE_DATE'),
-            'element' => Loc::getMessage('IEX_CPROP_FIELD_TYPE_ELEMENT')
+            'element' => Loc::getMessage('IEX_CPROP_FIELD_TYPE_ELEMENT'),
+            'html' => 'html'
         ];
 
         foreach ($arOption as $code => $name){
