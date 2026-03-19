@@ -318,6 +318,18 @@ class CIBlockPropertyCProp
                 //        "arTaskbars"=>["BXComponentsTaskbar", "BXComponents2Taskbar", "BXPropertiesTaskbar", "BXSnippetsTaskbar"],
                 //        ]);
 
+                if (\CModule::IncludeModule("fileman")) {
+                    \CFileMan::AddHTMLEditorFrame(
+                        $$correctFieldName,
+                        $value,
+                        $correctFieldNameType,
+                        "html",
+                        ['height' => 200, 'width' => '100%']
+                    );
+                } else {
+                    echo '<textarea name="'.$fieldName.'" rows="10" cols="50">'.htmlspecialcharsbx($val).'</textarea>';
+                }
+
                 CFileMan::AddHTMLEditorFrame(
                     $tempFieldName,
                     $value,
