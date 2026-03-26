@@ -1,0 +1,108 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "yandex disk api",
+        "description": "API для 8 задания стажировки only",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Локальный сервер"
+        }
+    ],
+    "paths": {
+        "/api/yadisk/check": {
+            "get": {
+                "tags": [
+                    "disk"
+                ],
+                "summary": "Проверка сервера",
+                "description": "Проверка сервера",
+                "operationId": "e040bccfd5de34b301df3776ae828bcb",
+                "responses": {
+                    "200": {
+                        "description": "Работает",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "string",
+                                            "example": "successful"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/yadisk": {
+            "get": {
+                "tags": [
+                    "disk"
+                ],
+                "summary": "получить список файлов",
+                "description": "Список файлов",
+                "operationId": "b33006960622874d7e3b4d11bb1604a8",
+                "responses": {
+                    "200": {
+                        "description": "список файлов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "string",
+                                            "example": "successful"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "disk",
+            "description": "Управление диском"
+        }
+    ]
+}

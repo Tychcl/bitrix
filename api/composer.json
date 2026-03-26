@@ -1,0 +1,26 @@
+{
+  "name": "tychcl/test_only",
+  "description": "Тестовое задание Only",
+  "type": "project",
+  "autoload": {
+      "psr-4": {
+        "Classes\\":"src/classes/",
+        "Api\\":"src/controllers/api/",
+        "Web\\":"src/controllers/web/",
+        "Core\\":"src/core/"
+    }
+  },
+  "require": {
+    "vlucas/phpdotenv": "^5.6",
+    "zircote/swagger-php": "*",
+    "arhitector/yandex": "dev-master",
+    "php-http/message-factory": "*"
+  },
+  "minimum-stability": "beta",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": false
+    }
+  }
+}
