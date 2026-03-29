@@ -1,5 +1,4 @@
 services:
-  # Веб-сервер с PHP приложением
   api:
     build: ./api
     container_name: OnlyTest8
@@ -9,10 +8,4 @@ services:
       - ./api:/var/www/html
     environment:
       OAUTH:
-      # подключения к БД
-      #DATABASE_HOST: db
-      #DATABASE_PORT: 3306
-      #DATABASE_NAME: NearbyDB
-      #DATABASE_USER: root
-      #DATABASE_PASSWORD: strong_password_123
     restart: unless-stopped
