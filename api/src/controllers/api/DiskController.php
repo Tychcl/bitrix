@@ -101,7 +101,6 @@ class DiskController
         $path = $this->normalizeFolderPath($params['path'] ?? "");
         $disk = $this->auth();
 
-
         $folder_allowed = [
             "path",
             "type",
@@ -364,8 +363,10 @@ class DiskController
                 $folder = $disk->getResource("app:$path".$name);
                 if($folder->has()){
                     return new Response(400, ["error" => "folder already exists"]);
+                }else{
+                    $folder->create();
                 }
-            } catch (NotFoundException $ex) {
+            } catch (\Throwable $ex) {
                 $folder->create();
             }
             
@@ -426,27 +427,12 @@ class DiskController
         try 
         {
             $resource = $disk->getResource("app:$path".$name);
-        } catch (NotFoundException $ex) {
+        } catch (\Throwable $ex) {
             return new Response(400, ["error" => "resource not exists"]);
         }
-
-        //$tmp_name =  $resource->isDir() ?  $resource->name.'.zip' : $resource->name;
-        //$path_save = __DIR__.'/'.$tmp_name;
         
         try{
             $link = $resource->getLink();
-            //if($resource->download($path_save, true)) {
-            //    header('Content-Type: application/octet-stream');
-            //    header('Content-Disposition: attachment; filename="' . $tmp_name . '"');
-            //    header('Content-Length: ' . filesize($path_save));
-            //    header('Pragma: no-cache');
-            //    header('Expires: 0');
-            //    readfile($path_save);
-            //    unlink($path_save);
-            //    exit;
-            //} else {
-            //    return new Response(500, ['error' => 'Ошибка загрузки файла']);
-            //}
         }catch(\Throwable $ex){
             return new Response(500, ['error' => get_class($ex)]);
         }
@@ -512,7 +498,7 @@ class DiskController
         try 
         {
             $resource = $disk->getResource("app:$path".$name);
-        } catch (NotFoundException $ex) {
+        } catch (\Throwable $ex) {
             return new Response(400, ["error" => "resource not exists"]);
         }
         
@@ -523,6 +509,86 @@ class DiskController
         }catch(\Throwable $ex){
             return new Response(500, ['error' => get_class($ex)]);
         }
+    }
+
+    #[OA\PUT(
+        path: '/api/yadisk/move',
+        tags: ['disk'],
+        summary: 'Переместить файл/папку',
+        parameters: [
+            new OA\Parameter(
+                name: 'path',
+                description: 'Путь до папки',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string'),
+                example: "/"
+            ),new OA\Parameter(
+                name: 'name',
+                description: 'Название файла',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string'),
+                example: "example.txt"
+            ),new OA\Parameter(
+                name: 'moveto',
+                description: 'Путь до папки куда переместить',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string'),
+                example: "/"
+            ),new OA\Parameter(
+                name: 'rewrite',
+                description: 'Перезаписать если ресурс существует?',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'bool'),
+                example: false
+            )],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Ссылка на скачивание',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'result', type: 'string', example: 'link')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Ошибка сервера',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'error', type: 'string')
+                    ]
+                )
+            )
+        ]
+    )]
+    #[Route("/move", "PUT")]
+    public function resMove($params)
+    {
+        $path = $this->normalizeFolderPath($params['path'] ?? "");
+        $moveto = $this->normalizeFolderPath($params['moveto'] ?? "");
+        $rewrite = boolval($params['rewrite'] ?? false);
+        $name = $params['name'] ?? null;
+
+        $disk = $this->auth();
+        try 
+        {
+            $resource = $disk->getResource("app:$path".$name);
+        } catch (NotFoundException $ex) {
+            return new Response(400, ["error" => "resource not exists"]);
+        }
+        
+        try{
+            //$des = $disk->getResource("app:$path");
+            $resource->move("app:$moveto".$name, $rewrite);
+        }catch(\Throwable $ex){
+            return new Response(500, ['error' => get_class($ex)]);
+        }
+        return new Response(200, ['result' => 'successful']);
     }
 
     private function auth(){

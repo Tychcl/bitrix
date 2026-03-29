@@ -461,6 +461,90 @@
                     }
                 }
             }
+        },
+        "/api/yadisk/move": {
+            "put": {
+                "tags": [
+                    "disk"
+                ],
+                "summary": "Переместить файл/папку",
+                "operationId": "4c411e7ad15d3ef339a529d4a85801ad",
+                "parameters": [
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "description": "Путь до папки",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "/"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Название файла",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "example.txt"
+                    },
+                    {
+                        "name": "moveto",
+                        "in": "query",
+                        "description": "Путь до папки куда переместить",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "/"
+                    },
+                    {
+                        "name": "rewrite",
+                        "in": "query",
+                        "description": "Перезаписать если ресурс существует?",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "example": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ссылка на скачивание",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "string",
+                                            "example": "link"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "tags": [
