@@ -22,11 +22,10 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'disk', description: 'Управление диском')]
 #[OA\Tag(name: 'folder', description: 'Управление папками на диске')]
 #[Route("/api/yadisk")]
+
 class DiskController
 {
-    /**
-     * Проверка сервера
-     */
+
     #[OA\Get(
         path: '/api/yadisk/check',
         tags: ['disk'],
@@ -108,8 +107,7 @@ class DiskController
             "offset"
         ];
 
-        try 
-        {
+        try {
             $folder = $disk->getResource("app:$path");
         } catch (NotFoundException $ex) {
             return new Response(400, ["error" => "folder not exists"]);
@@ -186,12 +184,12 @@ class DiskController
     #[Route("/file", "Post")]
     public function uploadFile($params, $request)
     {
-        try{
+        try {
             $path = $this->normalizeFolderPath($params['path'] ?? "");
             $create = boolval($params['create'] ?? false);
             $file = $request->files['file'] ?? null;
             
-            if(!$file){
+            if (!$file) {
                 return new Response(400, ["error" => "file required"]);
             }
 
@@ -199,7 +197,7 @@ class DiskController
 
             try {
                 $folder = $disk->getResource("app:$path");
-                if(!$folder->has() & $create){
+                if (!$folder->has() & $create) {
                     $folder->create();
                 }
             } catch (NotFoundException $ex) {
@@ -278,11 +276,11 @@ class DiskController
     #[Route("/file", "Put")]
     public function rewriteFile($params, $request)
     {
-        try{
+        try {
             $path = $this->normalizeFolderPath($params['path'] ?? "");
             $file = $request->files['file'] ?? null;
             
-            if(!$file){
+            if (!$file) {
                 return new Response(400, ["error" => "file required"]);
             }
 
@@ -349,11 +347,11 @@ class DiskController
     #[Route("/folder", "Post")]
     public function createFolder($params)
     {
-        try{
+        try {
             $path = $this->normalizeFolderPath($params['path'] ?? "");
             $name = $params['name'] ?? null;
 
-            if(!$name){
+            if (!$name) {
                 return new Response(400, ["error" => "folder name required"]);
             }
             
@@ -361,7 +359,7 @@ class DiskController
 
             try {
                 $folder = $disk->getResource("app:$path".$name);
-                if($folder->has()){
+                if ($folder->has()) {
                     return new Response(400, ["error" => "folder already exists"]);
                 }else{
                     $folder->create();
@@ -424,14 +422,13 @@ class DiskController
         $name = $params['name'] ?? null;
 
         $disk = $this->auth();
-        try 
-        {
+        try {
             $resource = $disk->getResource("app:$path".$name);
         } catch (\Throwable $ex) {
             return new Response(400, ["error" => "resource not exists"]);
         }
         
-        try{
+        try {
             $link = $resource->getLink();
         }catch(\Throwable $ex){
             return new Response(500, ['error' => get_class($ex)]);
@@ -495,15 +492,14 @@ class DiskController
         $perm = boolval($params['permamently'] ?? false);
 
         $disk = $this->auth();
-        try 
-        {
+        try {
             $resource = $disk->getResource("app:$path".$name);
         } catch (\Throwable $ex) {
             return new Response(400, ["error" => "resource not exists"]);
         }
         
-        try{
-            if($resource->delete($perm)){
+        try {
+            if ($resource->delete($perm)) {
                 return new Response(200, ['result' => 'successful']);
             }
         }catch(\Throwable $ex){
@@ -575,14 +571,13 @@ class DiskController
         $name = $params['name'] ?? null;
 
         $disk = $this->auth();
-        try 
-        {
+        try {
             $resource = $disk->getResource("app:$path".$name);
         } catch (NotFoundException $ex) {
             return new Response(400, ["error" => "resource not exists"]);
         }
         
-        try{
+        try {
             //$des = $disk->getResource("app:$path");
             $resource->move("app:$moveto".$name, $rewrite);
         }catch(\Throwable $ex){
@@ -607,3 +602,4 @@ class DiskController
         return '/' . $path . '/';
     }
 }
+?>
