@@ -55,7 +55,7 @@ class CarReservation extends \CBitrixComponent
     {
         
         echo '<pre>';
-        echo print_r($this->arParams, true);
+        //echo print_r($this->arParams, true);
 
         //получение доступных категорий комфорта для пользователя
         $strEntityDataClass = $this->getDataClass($this->Post);
