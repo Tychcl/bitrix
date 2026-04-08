@@ -38,11 +38,11 @@ class CarReservation extends \CBitrixComponent
         $startDate = new DateTime($startDateRaw);
         $endDate = new DateTime($endDateRaw);
         $startDateFormatted = $startDate->format('Y-m-d H:i:s');
-        $startDateFormatted = $endDate->format('Y-m-d H:i:s');
+        $endDateFormatted = $endDate->format('Y-m-d H:i:s');
 
         //Данные о пользователе
         $params['START'] = $startDateFormatted;
-        $params['END'] = $startDateFormatted;
+        $params['END'] = $endDateFormatted;
         $params['USER']['ID'] = $userId;
         $params['USER']['UF_POST'] = \Bitrix\Main\UserTable::getList([
             'filter' => ['=ID' => $params['USER']['ID']],
@@ -55,7 +55,7 @@ class CarReservation extends \CBitrixComponent
     {
         
         echo '<pre>';
-        //echo print_r($this->arParams, true);
+        echo print_r($this->arParams, true);
 
         //получение доступных категорий комфорта для пользователя
         $strEntityDataClass = $this->getDataClass($this->Post);
@@ -87,13 +87,15 @@ class CarReservation extends \CBitrixComponent
         $arFilter = [          
             'IBLOCK_CODE' => $this->Reservation,
             'ACTIVE' => 'Y',
-            '<=PROPERTY_START' => $this->arParams['START'],
-            '>=PROPERTY_END' => $this->arParams['END']
+			'<=PROPERTY_START' => $this->arParams['END'],
+    		'>=PROPERTY_END'   => $this->arParams['START'],
         ];
         $rsData = \CIBlockElement::GetList([],$arFilter, false, false, ['ID', 'PROPERTY_CAR']);
         while ($car = $rsData->Fetch()) {
+			$c[] = $car;
             unset($cars[$car['PROPERTY_CAR_VALUE']]);
         }
+		echo print_r($c, true);
         echo print_r($cars, true);
         echo '</pre>';
     }
