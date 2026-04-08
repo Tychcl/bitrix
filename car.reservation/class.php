@@ -55,7 +55,7 @@ class CarReservation extends \CBitrixComponent
     {
         
         echo '<pre>';
-        //echo print_r($this->arParams, true);
+		//echo print_r($this->arParams, true);
 
         //получение доступных категорий комфорта для пользователя
         $strEntityDataClass = $this->getDataClass($this->Post);
@@ -92,10 +92,8 @@ class CarReservation extends \CBitrixComponent
         ];
         $rsData = \CIBlockElement::GetList([],$arFilter, false, false, ['ID', 'PROPERTY_CAR']);
         while ($car = $rsData->Fetch()) {
-			$c[] = $car;
             unset($cars[$car['PROPERTY_CAR_VALUE']]);
         }
-		echo print_r($c, true);
         echo print_r($cars, true);
         echo '</pre>';
     }
